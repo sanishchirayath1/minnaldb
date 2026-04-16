@@ -1,0 +1,42 @@
+{
+  "name": "minnaldb-electron",
+  "version": "0.0.1",
+  "description": "Electron IPC bridge for minnaldb — DB lives in main, queries flow from the renderer",
+  "type": "module",
+  "main": "./dist/main.js",
+  "module": "./dist/main.js",
+  "types": "./dist/main.d.ts",
+  "exports": {
+    "./main": {
+      "types": "./dist/main.d.ts",
+      "import": "./dist/main.js"
+    },
+    "./renderer": {
+      "types": "./dist/renderer.d.ts",
+      "import": "./dist/renderer.js"
+    },
+    "./preload": {
+      "types": "./dist/preload.d.ts",
+      "import": "./dist/preload.js"
+    },
+    "./protocol": {
+      "types": "./dist/protocol.d.ts",
+      "import": "./dist/protocol.js"
+    }
+  },
+  "files": ["dist", "src"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "echo 'no electron tests yet (v0.0.2)'",
+    "clean": "rm -rf dist"
+  },
+  "peerDependencies": {
+    "electron": ">=28",
+    "minnaldb": "workspace:*"
+  },
+  "devDependencies": {
+    "electron": "^33.2.0",
+    "minnaldb": "workspace:*"
+  }
+}
