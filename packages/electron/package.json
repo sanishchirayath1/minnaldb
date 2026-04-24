@@ -1,6 +1,6 @@
 {
   "name": "minnaldb-electron",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Electron IPC bridge for minnaldb — DB lives in main, queries flow from the renderer",
   "license": "MIT",
   "author": "Sanish Chirayath",
