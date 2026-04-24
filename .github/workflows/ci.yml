@@ -21,6 +21,8 @@ jobs:
 
       - run: pnpm install --frozen-lockfile --ignore-scripts
 
+      - run: pnpm rebuild better-sqlite3
+
       - run: pnpm --filter minnaldb --filter minnaldb-react --filter minnaldb-electron build
 
       - run: pnpm --filter minnaldb test
