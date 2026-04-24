@@ -64,8 +64,8 @@ describe('createDB', () => {
 
   it('deletes with where', () => {
     const db = freshDB()
-    db.insert(users).values({ name: 'Ada', email: 'ada@x.com' })
-    db.delete(users).where((u) => u.email.eq('ada@x.com'))
+    const { lastInsertRowid } = db.insert(users).values({ name: 'Ada', email: 'ada@x.com' })
+    db.delete(users).where((u) => u.id.eq(Number(lastInsertRowid)))
     expect(db.query.users.run()).toHaveLength(0)
     db.close()
   })

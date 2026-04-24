@@ -38,7 +38,17 @@ export function compileSelect(
   state: SelectState,
 ): WireQuery {
   const params: unknown[] = []
-  const parts: string[] = [`SELECT * FROM ${quoteIdent(meta.name)}`]
+  // Emit explicit column list so SQL column names are aliased back to JS keys.
+  // Without this, a column defined as `createdAt: integer('created_at')` would
+  // appear as `created_at` in result rows, causing a mismatch with InferSelect.
+  const selectCols = Object.entries(meta.columns)
+    .map(([jsKey, col]) => {
+      const sqlName = col[kColumn].name
+      if (sqlName === jsKey) return quoteIdent(sqlName)
+      return `${quoteIdent(sqlName)} AS ${quoteIdent(jsKey)}`
+    })
+    .join(', ')
+  const parts: string[] = [`SELECT ${selectCols} FROM ${quoteIdent(meta.name)}`]
   if (state.whereClauses.length > 0) {
     const renderedWheres = state.whereClauses.map((w) => {
       const r = renderExpr(w)

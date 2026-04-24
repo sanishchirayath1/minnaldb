@@ -78,6 +78,7 @@ export function App() {
               </div>
               {n.body && <p style={styles.cardBody}>{n.body}</p>}
               <small style={styles.cardMeta}>
+                <pre>{JSON.stringify(n, null, 2)}</pre>
                 {new Date(n.createdAt).toLocaleString()}
               </small>
             </article>
