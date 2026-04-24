@@ -2,6 +2,16 @@
   "name": "minnaldb-react",
   "version": "0.0.1",
   "description": "React hooks for minnaldb",
+  "license": "MIT",
+  "author": "Sanish Chirayath",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sanishchirayath1/minnaldb.git",
+    "directory": "packages/react"
+  },
+  "homepage": "https://github.com/sanishchirayath1/minnaldb#readme",
+  "bugs": "https://github.com/sanishchirayath1/minnaldb/issues",
+  "keywords": ["minnaldb", "react", "hooks", "sqlite", "reactive"],
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -20,7 +30,7 @@
     "clean": "rm -rf dist"
   },
   "peerDependencies": {
-    "minnaldb": "workspace:*",
+    "minnaldb": "workspace:^",
     "react": ">=18"
   },
   "devDependencies": {

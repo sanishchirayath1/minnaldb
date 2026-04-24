@@ -2,6 +2,16 @@
   "name": "minnaldb",
   "version": "0.0.1",
   "description": "Lightning-fast reactive SQLite for Electron, built on better-sqlite3",
+  "license": "MIT",
+  "author": "Sanish Chirayath",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sanishchirayath1/minnaldb.git",
+    "directory": "packages/core"
+  },
+  "homepage": "https://github.com/sanishchirayath1/minnaldb#readme",
+  "bugs": "https://github.com/sanishchirayath1/minnaldb/issues",
+  "keywords": ["sqlite", "reactive", "electron", "better-sqlite3", "database", "orm", "typesafe"],
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",

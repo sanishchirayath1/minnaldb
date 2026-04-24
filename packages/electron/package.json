@@ -2,6 +2,16 @@
   "name": "minnaldb-electron",
   "version": "0.0.1",
   "description": "Electron IPC bridge for minnaldb — DB lives in main, queries flow from the renderer",
+  "license": "MIT",
+  "author": "Sanish Chirayath",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sanishchirayath1/minnaldb.git",
+    "directory": "packages/electron"
+  },
+  "homepage": "https://github.com/sanishchirayath1/minnaldb#readme",
+  "bugs": "https://github.com/sanishchirayath1/minnaldb/issues",
+  "keywords": ["minnaldb", "electron", "ipc", "sqlite", "reactive"],
   "type": "module",
   "main": "./dist/main.js",
   "module": "./dist/main.js",
@@ -33,7 +43,7 @@
   },
   "peerDependencies": {
     "electron": ">=28",
-    "minnaldb": "workspace:*"
+    "minnaldb": "workspace:^"
   },
   "devDependencies": {
     "electron": "^33.2.0",

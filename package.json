@@ -8,14 +8,18 @@
     "test": "pnpm -r test",
     "typecheck": "pnpm -r typecheck",
     "clean": "pnpm -r clean",
+    "changeset": "changeset",
+    "version-packages": "changeset version",
+    "release": "pnpm build && changeset publish",
     "rebuild:node": "cd node_modules/.pnpm/better-sqlite3@11.10.0/node_modules/better-sqlite3 && npx prebuild-install",
     "rebuild:electron": "pnpm --filter minnaldb-electron-demo exec electron-rebuild --module-dir ../.. -f -w better-sqlite3"
   },
   "devDependencies": {
-    "typescript": "^5.6.3",
+    "@changesets/cli": "^2.27.0",
+    "@types/node": "^22.9.0",
     "tsx": "^4.19.2",
-    "vitest": "^2.1.5",
-    "@types/node": "^22.9.0"
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.5"
   },
   "packageManager": "pnpm@10.33.0",
   "pnpm": {
