@@ -8,7 +8,6 @@
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
   "ignore": [
-    "minnaldb-monorepo",
     "minnaldb-node-demo",
     "minnaldb-electron-demo",
     "minnaldb-react-demo"
