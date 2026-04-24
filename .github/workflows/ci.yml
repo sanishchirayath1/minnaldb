@@ -21,7 +21,9 @@ jobs:
 
       - run: pnpm install --frozen-lockfile --ignore-scripts
 
-      - run: pnpm rebuild better-sqlite3
+      - name: Build better-sqlite3 native binding
+        working-directory: packages/core/node_modules/better-sqlite3
+        run: npx --yes node-gyp rebuild --release
 
       - run: pnpm --filter minnaldb --filter minnaldb-react --filter minnaldb-electron build
 
