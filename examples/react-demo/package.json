@@ -13,6 +13,8 @@
     "postinstall": "electron-rebuild --module-dir ../.. -f -w better-sqlite3"
   },
   "dependencies": {
+    "@preact/signals-core": "^1.14.1",
+    "@preact/signals-react": "^3.10.0",
     "minnaldb": "workspace:*",
     "minnaldb-electron": "workspace:*",
     "minnaldb-react": "workspace:*",

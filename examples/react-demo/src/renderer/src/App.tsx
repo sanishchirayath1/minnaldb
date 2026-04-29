@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useMutation, useQuery } from 'minnaldb-react'
 import { db, projects, tasks } from './db.js'
+import { SignalsDemo } from './SignalsDemo.js'
 
 export function App() {
   const [selectedProjectId, setSelectedProjectId] = useState<number | null>(null)
@@ -222,6 +223,9 @@ export function App() {
             Add
           </button>
         </form>
+
+        {/* Signals dashboard */}
+        <SignalsDemo />
 
         {/* Task list */}
         <div style={styles.taskList}>
