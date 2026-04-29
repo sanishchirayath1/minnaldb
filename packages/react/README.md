@@ -113,25 +113,38 @@ function AddUserForm() {
 
 ```bash
 npm install @preact/signals-core
-# Optional — enables automatic signal tracking in React components:
-npm install @preact/signals-react
 ```
 
 `@preact/signals-core` is an optional peer dependency of `minnaldb-react`. If you don't use the signals entry point, you don't need it.
 
+To read signal values in React components, use the `useSignalValue` bridge with React's built-in `useSyncExternalStore`:
+
+```tsx
+import { useSyncExternalStore } from 'react'
+import { effect, type ReadonlySignal } from '@preact/signals-core'
+
+function useSignalValue<T>(sig: ReadonlySignal<T>): T {
+  return useSyncExternalStore(
+    (cb) => effect(() => { sig.value; cb() }),
+    () => sig.value,
+  )
+}
+```
+
 ### useQuerySignal
 
 ```tsx
-import '@preact/signals-react'  // auto-tracking (optional)
 import { useQuerySignal } from 'minnaldb-react/signals'
 
 function UserCount() {
   const { data, loading } = useQuerySignal(
     () => db.query.users,
   )
+  const users = useSignalValue(data)
+  const isLoading = useSignalValue(loading)
 
-  if (loading.value) return <p>Loading...</p>
-  return <p>{data.value?.length ?? 0} users</p>
+  if (isLoading) return <p>Loading...</p>
+  return <p>{users?.length ?? 0} users</p>
 }
 ```
 
@@ -164,15 +177,17 @@ function AddUserButton() {
     (name: string, email: string) =>
       db.insert(users).values({ name, email }),
   )
+  const isLoading = useSignalValue(loading)
+  const lastError = useSignalValue(error)
 
   return (
     <>
-      {error.value && <p>Error: {error.value.message}</p>}
+      {lastError && <p>Error: {lastError.message}</p>}
       <button
-        disabled={loading.value}
+        disabled={isLoading}
         onClick={() => mutate('Ada', 'ada@acme.com')}
       >
-        {loading.value ? 'Saving...' : 'Add User'}
+        {isLoading ? 'Saving...' : 'Add User'}
       </button>
     </>
   )
@@ -200,22 +215,6 @@ With signals:
 - A parent that calls `useQuerySignal` but doesn't read any `.value` won't re-render at all — only the children that actually consume the signal do
 
 This makes signals a good fit for dashboards, stat counters, or any UI where many components derive different views from the same underlying query.
-
-### Using without @preact/signals-react
-
-If you prefer not to add `@preact/signals-react`, you can bridge signals into React with `useSyncExternalStore`:
-
-```tsx
-import { useSyncExternalStore } from 'react'
-import { effect, type ReadonlySignal } from '@preact/signals-core'
-
-function useSignalValue<T>(sig: ReadonlySignal<T>): T {
-  return useSyncExternalStore(
-    (cb) => effect(() => { sig.value; cb() }),
-    () => sig.value,
-  )
-}
-```
 
 ## With Electron (remote database)
 

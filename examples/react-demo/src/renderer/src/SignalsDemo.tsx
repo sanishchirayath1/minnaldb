@@ -5,12 +5,11 @@
  * Each stat card is its own component reading a specific signal, so only the
  * card whose data changed re-renders — not the whole dashboard.
  *
- * `@preact/signals-react` auto-tracks signal reads in components — reading
- * `.value` in render automatically subscribes the component to that signal.
+ * Signal values are bridged into React via `useSyncExternalStore` — no
+ * patching of React internals required.
  */
-import '@preact/signals-react'
 import { useState, useRef } from 'react'
-import { useQuerySignal, useMutationSignal } from 'minnaldb-react/signals'
+import { useQuerySignal, useMutationSignal, useSignalValue } from 'minnaldb-react/signals'
 import { db, tasks } from './db.js'
 
 // ---------------------------------------------------------------------------
@@ -28,11 +27,12 @@ function useRenderCount() {
 
 function TotalTasksCard() {
   const { data } = useQuerySignal(() => db.query.tasks)
+  const allTasks = useSignalValue(data)
   const renders = useRenderCount()
 
   return (
     <div style={styles.card}>
-      <span style={styles.cardValue}>{data.value?.length ?? 0}</span>
+      <span style={styles.cardValue}>{allTasks?.length ?? 0}</span>
       <span style={styles.cardLabel}>Total Tasks</span>
       <span style={styles.renderBadge}>renders: {renders}</span>
     </div>
@@ -43,11 +43,12 @@ function CompletedCard() {
   const { data } = useQuerySignal(
     () => db.query.tasks.where((t) => t.done.eq(1)),
   )
+  const done = useSignalValue(data)
   const renders = useRenderCount()
 
   return (
     <div style={styles.card}>
-      <span style={styles.cardValue}>{data.value?.length ?? 0}</span>
+      <span style={styles.cardValue}>{done?.length ?? 0}</span>
       <span style={styles.cardLabel}>Completed</span>
       <span style={styles.renderBadge}>renders: {renders}</span>
     </div>
@@ -58,11 +59,12 @@ function ActiveCard() {
   const { data } = useQuerySignal(
     () => db.query.tasks.where((t) => t.done.eq(0)),
   )
+  const active = useSignalValue(data)
   const renders = useRenderCount()
 
   return (
     <div style={styles.card}>
-      <span style={styles.cardValue}>{data.value?.length ?? 0}</span>
+      <span style={styles.cardValue}>{active?.length ?? 0}</span>
       <span style={styles.cardLabel}>Active</span>
       <span style={styles.renderBadge}>renders: {renders}</span>
     </div>
@@ -71,11 +73,12 @@ function ActiveCard() {
 
 function ProjectCountCard() {
   const { data } = useQuerySignal(() => db.query.projects)
+  const allProjects = useSignalValue(data)
   const renders = useRenderCount()
 
   return (
     <div style={styles.card}>
-      <span style={styles.cardValue}>{data.value?.length ?? 0}</span>
+      <span style={styles.cardValue}>{allProjects?.length ?? 0}</span>
       <span style={styles.cardLabel}>Projects</span>
       <span style={styles.renderBadge}>renders: {renders}</span>
     </div>
@@ -93,6 +96,8 @@ function QuickAdd() {
       await db.insert(tasks).values({ title: t })
     },
   )
+  const isLoading = useSignalValue(loading)
+  const lastError = useSignalValue(error)
   const renders = useRenderCount()
 
   const onSubmit = async (e: React.FormEvent) => {
@@ -110,10 +115,10 @@ function QuickAdd() {
         placeholder="Quick add task (signals)..."
         style={styles.quickInput}
       />
-      <button type="submit" disabled={loading.value} style={styles.quickBtn}>
-        {loading.value ? '...' : 'Add'}
+      <button type="submit" disabled={isLoading} style={styles.quickBtn}>
+        {isLoading ? '...' : 'Add'}
       </button>
-      {error.value && <span style={styles.error}>{error.value.message}</span>}
+      {lastError && <span style={styles.error}>{lastError.message}</span>}
       <span style={styles.renderBadge}>renders: {renders}</span>
     </form>
   )

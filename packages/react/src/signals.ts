@@ -1,11 +1,34 @@
-import { useCallback, useEffect, useRef } from 'react'
-import { signal, type ReadonlySignal, type Signal } from '@preact/signals-core'
+import { useCallback, useEffect, useRef, useSyncExternalStore } from 'react'
+import { effect, signal, type ReadonlySignal, type Signal } from '@preact/signals-core'
 
 // Same minimal subscribable contract as the main entry point — keeps this
 // module decoupled from the concrete minnaldb package.
 type SubscribeFn<T> = (cb: (value: T) => void) => () => void
 interface Subscribable<T> {
   subscribe: SubscribeFn<T>
+}
+
+// Re-export ReadonlySignal so consumers don't need to depend on
+// @preact/signals-core directly.
+export type { ReadonlySignal } from '@preact/signals-core'
+
+/**
+ * Read a signal's value inside a React component. The component re-renders
+ * only when this specific signal changes — not when sibling signals update.
+ *
+ * Uses React's built-in `useSyncExternalStore` under the hood.
+ *
+ * ```tsx
+ * const { data } = useQuerySignal(() => db.query.users)
+ * const users = useSignalValue(data)
+ * return <p>{users?.length ?? 0} users</p>
+ * ```
+ */
+export function useSignalValue<T>(sig: ReadonlySignal<T>): T {
+  return useSyncExternalStore(
+    (cb) => effect(() => { sig.value; cb() }),
+    () => sig.value,
+  )
 }
 
 export interface UseQuerySignalResult<T> {
@@ -21,16 +44,15 @@ export interface UseQuerySignalResult<T> {
  * Signal-based alternative to `useQuery`. Instead of triggering a React
  * re-render on every subscription update, this hook writes into signals.
  *
- * Components that read `result.data.value` (or use `@preact/signals-react`
- * auto-tracking) will re-render only when the specific signal they access
- * changes — not when *any* part of the query result changes.
+ * Use `useSignalValue` to read signals in your components — only the
+ * component reading a specific signal re-renders when it changes.
  *
- * Usage with `@preact/signals-react`:
  * ```tsx
- * import { useQuerySignal } from 'minnaldb-react/signals'
+ * import { useQuerySignal, useSignalValue } from 'minnaldb-react/signals'
  * function UserCount() {
  *   const { data } = useQuerySignal(() => db.query.users)
- *   return <span>{data.value?.length ?? 0}</span>
+ *   const users = useSignalValue(data)
+ *   return <span>{users?.length ?? 0}</span>
  * }
  * ```
  */
