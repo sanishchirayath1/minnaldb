@@ -109,32 +109,12 @@ function AddUserForm() {
 
 `minnaldb-react/signals` exposes signal-based alternatives to `useQuery` and `useMutation`. Instead of calling `setState` on every update (which re-renders the entire component), these hooks write into [Preact Signals](https://github.com/preactjs/signals). Components that read a specific signal only re-render when that signal changes.
 
-### Install
-
-```bash
-npm install @preact/signals-core
-```
-
-`@preact/signals-core` is an optional peer dependency of `minnaldb-react`. If you don't use the signals entry point, you don't need it.
-
-To read signal values in React components, use the `useSignalValue` bridge with React's built-in `useSyncExternalStore`:
-
-```tsx
-import { useSyncExternalStore } from 'react'
-import { effect, type ReadonlySignal } from '@preact/signals-core'
-
-function useSignalValue<T>(sig: ReadonlySignal<T>): T {
-  return useSyncExternalStore(
-    (cb) => effect(() => { sig.value; cb() }),
-    () => sig.value,
-  )
-}
-```
-
 ### useQuerySignal
 
+Use `useSignalValue` to read signal values in your components — it re-renders only the component reading that specific signal.
+
 ```tsx
-import { useQuerySignal } from 'minnaldb-react/signals'
+import { useQuerySignal, useSignalValue } from 'minnaldb-react/signals'
 
 function UserCount() {
   const { data, loading } = useQuerySignal(
@@ -170,7 +150,7 @@ const { data } = useQuerySignal(
 ### useMutationSignal
 
 ```tsx
-import { useMutationSignal } from 'minnaldb-react/signals'
+import { useMutationSignal, useSignalValue } from 'minnaldb-react/signals'
 
 function AddUserButton() {
   const { mutate, loading, error } = useMutationSignal(
