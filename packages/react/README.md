@@ -105,6 +105,118 @@ function AddUserForm() {
 }
 ```
 
+## Signals
+
+`minnaldb-react/signals` exposes signal-based alternatives to `useQuery` and `useMutation`. Instead of calling `setState` on every update (which re-renders the entire component), these hooks write into [Preact Signals](https://github.com/preactjs/signals). Components that read a specific signal only re-render when that signal changes.
+
+### Install
+
+```bash
+npm install @preact/signals-core
+# Optional — enables automatic signal tracking in React components:
+npm install @preact/signals-react
+```
+
+`@preact/signals-core` is an optional peer dependency of `minnaldb-react`. If you don't use the signals entry point, you don't need it.
+
+### useQuerySignal
+
+```tsx
+import '@preact/signals-react'  // auto-tracking (optional)
+import { useQuerySignal } from 'minnaldb-react/signals'
+
+function UserCount() {
+  const { data, loading } = useQuerySignal(
+    () => db.query.users,
+  )
+
+  if (loading.value) return <p>Loading...</p>
+  return <p>{data.value?.length ?? 0} users</p>
+}
+```
+
+#### Return value
+
+```ts
+{
+  data: ReadonlySignal<T | undefined>       // Reactive query result
+  loading: ReadonlySignal<boolean>           // true until first value arrives
+  error: ReadonlySignal<Error | undefined>   // Populated if the query throws
+}
+```
+
+Like `useQuery`, it accepts an optional `deps` array to re-subscribe when values change:
+
+```tsx
+const { data } = useQuerySignal(
+  () => db.query.tasks.where(t => t.projectId.eq(pid)),
+  [pid],
+)
+```
+
+### useMutationSignal
+
+```tsx
+import { useMutationSignal } from 'minnaldb-react/signals'
+
+function AddUserButton() {
+  const { mutate, loading, error } = useMutationSignal(
+    (name: string, email: string) =>
+      db.insert(users).values({ name, email }),
+  )
+
+  return (
+    <>
+      {error.value && <p>Error: {error.value.message}</p>}
+      <button
+        disabled={loading.value}
+        onClick={() => mutate('Ada', 'ada@acme.com')}
+      >
+        {loading.value ? 'Saving...' : 'Add User'}
+      </button>
+    </>
+  )
+}
+```
+
+#### Return value
+
+```ts
+{
+  mutate: (...args) => Promise<TResult>          // Call to execute the mutation
+  loading: ReadonlySignal<boolean>               // true while in-flight
+  error: ReadonlySignal<Error | undefined>       // Populated on failure
+  reset: () => void                              // Clear loading and error state
+}
+```
+
+### Why signals?
+
+With the standard `useQuery` hook, every subscription update calls `setState`, which re-renders the component and all its children — even if they only read `loading` or a derived value like `data.length`.
+
+With signals:
+- A component reading `loading.value` won't re-render when `data` changes
+- A component reading `data.value` won't re-render when `error` changes
+- A parent that calls `useQuerySignal` but doesn't read any `.value` won't re-render at all — only the children that actually consume the signal do
+
+This makes signals a good fit for dashboards, stat counters, or any UI where many components derive different views from the same underlying query.
+
+### Using without @preact/signals-react
+
+If you prefer not to add `@preact/signals-react`, you can bridge signals into React with `useSyncExternalStore`:
+
+```tsx
+import { useSyncExternalStore } from 'react'
+import { effect, type ReadonlySignal } from '@preact/signals-core'
+
+function useSignalValue<T>(sig: ReadonlySignal<T>): T {
+  return useSyncExternalStore(
+    (cb) => effect(() => { sig.value; cb() }),
+    () => sig.value,
+  )
+}
+```
+
 ## With Electron (remote database)
 
 Works identically with `minnaldb-electron/renderer` — the hooks don't care whether the database is local or remote:
