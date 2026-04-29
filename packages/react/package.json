@@ -11,7 +11,13 @@
   },
   "homepage": "https://github.com/sanishchirayath1/minnaldb#readme",
   "bugs": "https://github.com/sanishchirayath1/minnaldb/issues",
-  "keywords": ["minnaldb", "react", "hooks", "sqlite", "reactive"],
+  "keywords": [
+    "minnaldb",
+    "react",
+    "hooks",
+    "sqlite",
+    "reactive"
+  ],
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -20,9 +26,16 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
+    },
+    "./signals": {
+      "types": "./dist/signals.d.ts",
+      "import": "./dist/signals.js"
     }
   },
-  "files": ["dist", "src"],
+  "files": [
+    "dist",
+    "src"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
@@ -30,10 +43,17 @@
     "clean": "rm -rf dist"
   },
   "peerDependencies": {
+    "@preact/signals-core": ">=1.5.0",
     "minnaldb": "workspace:^",
     "react": ">=18"
   },
+  "peerDependenciesMeta": {
+    "@preact/signals-core": {
+      "optional": true
+    }
+  },
   "devDependencies": {
+    "@preact/signals-core": "^1.14.1",
     "@types/react": "^18.3.12",
     "react": "^18.3.1"
   }

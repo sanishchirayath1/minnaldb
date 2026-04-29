@@ -76,6 +76,12 @@ importers:
 
   examples/react-demo:
     dependencies:
+      '@preact/signals-core':
+        specifier: ^1.14.1
+        version: 1.14.1
+      '@preact/signals-react':
+        specifier: ^3.10.0
+        version: 3.10.0(react@18.3.1)
       minnaldb:
         specifier: workspace:*
         version: link:../../packages/core
@@ -139,6 +145,9 @@ importers:
         specifier: workspace:^
         version: link:../core
     devDependencies:
+      '@preact/signals-core':
+        specifier: ^1.14.1
+        version: 1.14.1
       '@types/react':
         specifier: ^18.3.12
         version: 18.3.28
@@ -665,6 +674,14 @@ packages:
   '@pkgjs/parseargs@0.11.0':
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
     engines: {node: '>=14'}
+
+  '@preact/signals-core@1.14.1':
+    resolution: {integrity: sha512-vxPpfXqrwUe9lpjqfYNjAF/0RF/eFGeLgdJzdmIIZjpOnTmGmAB4BjWone562mJGMRP4frU6iZ6ei3PDsu52Ng==}
+
+  '@preact/signals-react@3.10.0':
+    resolution: {integrity: sha512-Uxu6lidNVr9z27b/6DbCin86ekzHiJDrLXZii82aXSzvyMXYMr7l0Bab1cKbfWdbkxq13e7kS7paix3pjKBTLA==}
+    peerDependencies:
+      react: ^16.14.0 || 17.x || 18.x || 19.x
 
   '@rolldown/pluginutils@1.0.0-beta.27':
     resolution: {integrity: sha512-+d0F4MKMCbeVUJwG96uQ4SgAznZNSq93I3V+9NHA4OpvqG8mRCpGdKmK8l/dl02h2CCDHwW2FqilnTyDcAnqjA==}
@@ -2010,6 +2027,11 @@ packages:
     peerDependencies:
       browserslist: '>= 4.21.0'
 
+  use-sync-external-store@1.6.0:
+    resolution: {integrity: sha512-Pp6GSwGP/NrPIrxVFAIkOQeyw8lFenOHijQWkUTrDvrF4ALqylP2C/KCkeS9dpUM3KvYRQhna5vt7IL95+ZQ9w==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+
   util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
 
@@ -2658,6 +2680,14 @@ snapshots:
 
   '@pkgjs/parseargs@0.11.0':
     optional: true
+
+  '@preact/signals-core@1.14.1': {}
+
+  '@preact/signals-react@3.10.0(react@18.3.1)':
+    dependencies:
+      '@preact/signals-core': 1.14.1
+      react: 18.3.1
+      use-sync-external-store: 1.6.0(react@18.3.1)
 
   '@rolldown/pluginutils@1.0.0-beta.27': {}
 
@@ -4013,6 +4043,10 @@ snapshots:
       browserslist: 4.28.2
       escalade: 3.2.0
       picocolors: 1.1.1
+
+  use-sync-external-store@1.6.0(react@18.3.1):
+    dependencies:
+      react: 18.3.1
 
   util-deprecate@1.0.2: {}
 
